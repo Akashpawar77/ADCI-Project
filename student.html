@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="stylesss.css">
+</head>
+<body>
+    <div class="student-dashboard" id="studentDashboard">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Student Dashboard</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#logout">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+            <!-- Student Profile Section -->
+            <div class="student-profile">
+                <div class="profile-header text-center">
+                    <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=240&h=240&fit=crop" alt="Student Profile" class="profile-image">
+                    <h2 class="mb-1">Bryan B Sewell</h2>
+                    <p class="mb-0">Student ID: 2023CS1105</p>
+                    <p>Computer Science - Year 11</p>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <div class="stat-value">78.26%</div>
+                        <div class="stat-label">Overall Attendance</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">18/23</div>
+                        <div class="stat-label">Days Present</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Subjects</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">4.2/5.0</div>
+                        <div class="stat-label">GPA</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Monday</th>
+                                <th>Tuesday</th>
+                                <th>Wednesday</th>
+                                <th>Thursday</th>
+                                <th>Friday</th>
+                                <th>Total</th>
+                                <th>%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Data Mining and Visualization</td>
+                                <td class="present">Present</td>
+                                <td class="present">Present</td>
+                                <td class="not-taken">Absent</td>
+                                <td class="present">Present</td>
+                                <td class="absent">Absent</td>
+                                <td>5/7</td>
+                                <td>71.43%</td>
+                            </tr>
+                            <tr>
+                                <td>Cloud Privacy and Security</td>
+                                <td class="not-taken">Absent</td>
+                                <td class="not-taken">Absent</td>
+                                <td class="absent">Absent</td>
+                                <td class="not-taken">Absent</td>
+                                <td class="present">Present</td>
+                                <td>1/2</td>
+                                <td>50%</td>
+                            </tr>
+                            <tr>
+                                <td>Advanced Web Development</td>
+                                <td class="present">Present</td>
+                                <td class="present">Present</td>
+                                <td class="present">Present</td>
+                                <td class="absent">Absent</td>
+                                <td class="present">Present</td>
+                                <td>4/5</td>
+                                <td>80%</td>
+                            </tr>
+                            <tr>
+                                <td>Machine Learning Fundamentals</td>
+                                <td class="present">Present</td>
+                                <td class="not-taken">Absent</td>
+                                <td class="present">Present</td>
+                                <td class="present">Present</td>
+                                <td class="present">Present</td>
+                                <td>4/4</td>
+                                <td>100%</td>
+                            </tr>
+                            <tr>
+                                <td>Database Systems</td>
+                                <td class="present">Present</td>
+                                <td class="present">Present</td>
+                                <td class="absent">Absent</td>
+                                <td class="present">Present</td>
+                                <td class="present">Present</td>
+                                <td>4/5</td>
+                                <td>80%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Attendance Calendar</h5>
+                                <div class="calendar-controls">
+                                    <select class="form-select form-select-sm" id="monthSelect">
+                                        <option value="1">January 2023</option>
+                                        <option value="2">February 2023</option>
+                                        <option value="3">March 2023</option>
+                                        <option value="4">April 2023</option>
+                                        <option value="5">May 2023</option>
+                                        <option value="6">June 2023</option>
+                                        <option value="7">July 2023</option>
+                                        <option value="8" selected>August 2023</option>
+                                        <option value="9">September 2023</option>
+                                        <option value="10">October 2023</option>
+                                        <option value="11">November 2023</option>
+                                        <option value="12">December 2023</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="calendar-legend mb-2">
+                                <span class="badge bg-success">Present</span>
+                                <span class="badge bg-danger mx-2">Absent</span>
+                                <span class="badge bg-secondary">Not Taken</span>
+                            </div>
+                            <div class="calendar-grid" id="calendarGrid">
+                                <!-- Calendar will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header text-white">
+                            <h5 class="mb-0">Monthly Attendance Trend</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="attendanceProgress"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Summary Of Attendance</h5>
+                    <p class="mb-1">Present Days out of Working Days: 18/23</p>
+                    <p class="mb-0">Attendance Percentage: 78.26%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Initialize attendance progress chart
+        const ctx = document.getElementById('attendanceProgress').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['April', 'May', 'June', 'July', 'August'],
+                datasets: [{
+                    label: 'Monthly Attendance %',
+                    data: [85, 92, 88, 95, 78.26],
+                    backgroundColor: [
+                        'rgba(37, 99, 235, 0.8)',
+                        'rgba(37, 99, 235, 0.8)',
+                        'rgba(37, 99, 235, 0.8)',
+                        'rgba(37, 99, 235, 0.8)',
+                        'rgba(37, 99, 235, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(37, 99, 235, 1)'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Attendance Percentage'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Generate calendar
+        function generateCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            
+            // Add day headers
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            days.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'calendar-day';
+                dayHeader.textContent = day;
+                grid.appendChild(dayHeader);
+            });
+
+            // Get first day and total days of current month
+            const month = parseInt(document.getElementById('monthSelect').value) - 1;
+            const year = 2023;
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Add empty cells for days before the 1st
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                grid.appendChild(emptyDay);
+            }
+
+            // Add days with random attendance status
+            const statuses = ['present', 'absent', 'not-taken'];
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                const status = statuses[Math.floor(Math.random() * 3)];
+                dayCell.className = `calendar-day ${status}`;
+                dayCell.textContent = day;
+                grid.appendChild(dayCell);
+            }
+        }
+
+        // Initialize calendar
+        generateCalendar();
+        document.getElementById('monthSelect').addEventListener('change', generateCalendar);
+    </script>
+</body>
+</html>
