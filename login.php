@@ -78,6 +78,18 @@
                 </script>
             ';
         }
+        $res1=mysqli_query($con,"SELECT * FROM studentreg WHERE email='".$email."' AND password='".$password."'");
+        $row1=mysqli_fetch_row($res1);
+        
+        if($num1=mysqli_num_rows($res1)>0)
+        {
+            $_SESSION['studentreg']=$row[0];
+            echo'
+                <script>
+                    window.location.href="student.html";
+                </script>
+            ';
+        }
         else
         {
             echo'
