@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mark Student Attendance</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #3f37c9;
+        --secondary-color: #3f37c9;
+        --success-color: #3f37c9;
+        --warning-color: #3f37c9;
+        --light-color: #f8f9fa;
+        --dark-color: #212529;
+        --border-radius: 10px;
+      }
+
+      body {
+        font-family: "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+      }
+
+      .attendance-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0;
+      }
+
+      .card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        overflow: hidden;
+      }
+
+      .card-header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 15px 20px;
+        font-weight: 600;
+        border: none;
+      }
+
+      .attendance-header {
+        background-color: white;
+        border-radius: var(--border-radius);
+        padding: 25px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .attendance-header h2 {
+        color: var(--dark-color);
+        font-weight: 700;
+        margin-bottom: 20px;
+      }
+
+      .filter-container {
+        padding: 15px 20px;
+        border-radius: var(--border-radius);
+        background-color: var(--light-color);
+        border: 1px solid #dee2e6;
+        margin-bottom: 20px;
+      }
+
+      .datepicker-input-group {
+        position: relative;
+      }
+
+      .datepicker-input-group i {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-color);
+        z-index: 4;
+      }
+
+      .stats-row {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .stats-card {
+        flex: 1;
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+      }
+
+      .stats-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .stats-card-header {
+        padding: 15px;
+        color: white;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .stats-card-body {
+        padding: 20px;
+        text-align: center;
+      }
+
+      .stats-card-value {
+        font-size: 36px;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .present-card .stats-card-header {
+        background-color: var(--success-color);
+      }
+
+      .absent-card .stats-card-header {
+        background-color: var(--warning-color);
+      }
+
+      .stats-container {
+        display: flex;
+        gap: 20px;
+      }
+
+      .table-responsive {
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        background-color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .attendance-table {
+        margin-bottom: 0;
+      }
+
+      .attendance-table thead th {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 15px;
+        font-weight: 600;
+      }
+
+      .attendance-table tbody td {
+        padding: 15px;
+        vertical-align: middle;
+        border-color: #eef0f2;
+      }
+
+      .attendance-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border-radius: 30px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+
+      .btn-primary:hover,
+      .btn-primary:focus {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+      }
+
+      .btn-warning {
+        background-color: #3f37c9;
+        border-color: #3f37c9;
+        color: white;
+      }
+
+      .btn-warning:hover,
+      .btn-warning:focus {
+        background-color: #3f37c9;
+        border-color: #3f37c9;
+        color: white;
+      }
+
+      .form-select {
+        padding: 10px 15px;
+        border-radius: var(--border-radius);
+        border: 1px solid #dee2e6;
+      }
+
+      .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+      }
+
+      .status-present {
+        background-color: rgba(29, 116, 204, 0.1);
+      }
+
+      .status-absent {
+        background-color: rgba(148, 15, 15, 0.1);
+      }
+
+      .status-select {
+        width: 100%;
+        border-radius: var(--border-radius);
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+      }
+
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        color: white;
+        backdrop-filter: blur(3px);
+      }
+
+      .loading-content {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: var(--border-radius);
+        padding: 25px 40px;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: var(--dark-color);
+      }
+
+      .spinner-border {
+        width: 3rem;
+        height: 3rem;
+        margin-bottom: 15px;
+        color: var(--primary-color);
+      }
+
+      .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1100;
+      }
+
+      .toast {
+        border-radius: var(--border-radius);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        min-width: 300px;
+      }
+
+      .toast-body {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+      }
+
+      .toast-icon {
+        margin-right: 15px;
+        font-size: 20px;
+      }
+
+      .toast-text {
+        flex-grow: 1;
+      }
+
+      .toast-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .stats-inline {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .stats-inline .stats-card {
+        display: flex;
+        align-items: center;
+        padding: 0;
+      }
+
+      .stats-inline .stats-card-header {
+        padding: 15px;
+        width: 120px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .stats-inline .stats-card-body {
+        display: flex;
+        align-items: center;
+        padding: 15px 25px;
+      }
+
+      .stats-inline .stats-card-value {
+        font-size: 28px;
+        margin-right: 10px;
+      }
+
+      .stats-inline .stats-card-label {
+        font-size: 14px;
+        color: #6c757d;
+        margin: 0;
+      }
+
+      @media (max-width: 768px) {
+        .attendance-container {
+          padding: 15px;
+          margin: 15px auto;
+        }
+
+        .stats-row {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .attendance-actions {
+          justify-content: center;
+        }
+
+        .stats-inline {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="attendance-container">
+      <div class="attendance-header">
+        <h2 class="text-center">Mark Student Attendance</h2>
+
+        <div class="filter-container">
+          <div class="row align-items-center mb-3">
+            <div class="col-md-2">
+              <label for="classSelect" class="form-label fw-bold">Class:</label>
+            </div>
+            <div class="col-md-4">
+              <select class="form-select" id="classSelect">
+                <!--<option value="">Select Class</option>-->
+                <option value="1">Class 1</option>
+                <option value="2">Class 2</option>
+                <option value="3">Class 3</option>
+                <option value="4">Class 4</option>
+                <option value="5">Class 5</option>
+                <option value="5">Class 6</option>
+                <option value="5">Class 7</option>
+                <option value="5">Class 8</option>
+                <option value="5">Class 9</option>
+                <option value="5">Class 10</option>
+                <option value="5">Class 11</option>
+                <option value="5">Class 12</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label for="batchSelect" class="form-label fw-bold">Batch:</label>
+            </div>
+            <div class="col-md-4">
+              <select class="form-select" id="batchSelect">
+                <!--<option value="">Select Batch</option>-->
+                <option value="A">Mornning</option>
+                <option value="B">Afternoon</option>
+                <option value="C">Evenning</option>
+              </select>
+            </div>
+          </div>
+          <div class="row align-items-center">
+            <div class="col-md-2">
+              <label for="attendanceDate" class="form-label fw-bold"
+                >Date:</label
+              >
+            </div>
+            <div class="col-md-10">
+              <div class="datepicker-input-group">
+                <input
+                  type="text"
+                  class="form-control datepicker"
+                  id="attendanceDate"
+                  placeholder="YYYY-MM-DD"
+                />
+                <i class="fas fa-calendar-alt"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inline stats display -->
+        <div class="stats-inline">
+          <div class="stats-card present-card">
+            <div class="stats-card-header">
+              <h5 class="mb-0">Present</h5>
+            </div>
+            <div class="stats-card-body">
+              <p class="stats-card-value text-success" id="presentCount">0</p>
+              <p class="stats-card-label">Students</p>
+            </div>
+          </div>
+
+          <div class="stats-card absent-card">
+            <div class="stats-card-header">
+              <h5 class="mb-0">Absent</h5>
+            </div>
+            <div class="stats-card-body">
+              <p class="stats-card-value text-danger" id="absentCount">0</p>
+              <p class="stats-card-label">Students</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <div>Attendance Record</div>
+          <div class="badge bg-light text-dark" id="totalStudents">
+            Total: 0 students
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover attendance-table">
+              <thead>
+                <tr>
+                  <th width="15%">Roll No</th>
+                  <th>Student Name</th>
+                  <th width="25%">Status</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceTableBody">
+                <!-- Data will be loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="attendance-actions">
+        <button class="btn btn-warning" id="updateBtn">
+          <i class="fas fa-sync-alt me-2"></i>Update
+        </button>
+        <button class="btn btn-primary" id="submitBtn" disabled>
+          <i class="fas fa-save me-2"></i>Submit
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" style="display: none">
+      <div class="loading-content">
+        <div class="spinner-border" role="status"></div>
+        <span id="loadingText" class="fw-bold">Loading...</span>
+      </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container">
+      <div
+        class="toast align-items-center border-0"
+        id="successToast"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex">
+          <div class="toast-body">
+            <div class="toast-icon">
+              <i class="fas fa-check-circle text-success"></i>
+            </div>
+            <div class="toast-text">
+              <!--<div class="toast-title">Success</div>-->
+              <div id="toastMessage">Operation completed successfully!</div>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Sample student data
+        const sampleStudentData = {
+          "2025-03-19": [
+            { id: 1, rollNo: 1, name: "John Doe", status: "present" },
+            { id: 2, rollNo: 2, name: "Jane Smith", status: "present" },
+            { id: 3, rollNo: 3, name: "Mike Johnson", status: "absent" },
+            { id: 4, rollNo: 4, name: "Emily Williams", status: "present" },
+            { id: 5, rollNo: 5, name: "David Brown", status: "present" },
+          ],
+          "2025-03-18": [
+            { id: 1, rollNo: 1, name: "John Doe", status: "present" },
+            { id: 2, rollNo: 2, name: "Jane Smith", status: "absent" },
+            { id: 3, rollNo: 3, name: "Mike Johnson", status: "absent" },
+            { id: 4, rollNo: 4, name: "Emily Williams", status: "present" },
+            { id: 5, rollNo: 5, name: "David Brown", status: "absent" },
+          ],
+          "2025-03-17": [
+            { id: 1, rollNo: 1, name: "John Doe", status: "absent" },
+            { id: 2, rollNo: 2, name: "Jane Smith", status: "present" },
+            { id: 3, rollNo: 3, name: "Mike Johnson", status: "present" },
+            { id: 4, rollNo: 4, name: "Emily Williams", status: "absent" },
+            { id: 5, rollNo: 5, name: "David Brown", status: "present" },
+          ],
+        };
+
+        // Success toast instance
+        const successToast = new bootstrap.Toast(
+          document.getElementById("successToast")
+        );
+
+        // Track if data has been modified
+        let dataModified = false;
+
+        // Track if update is in progress
+        let updateInProgress = false;
+
+        // Initialize datepicker
+        $(".datepicker")
+          .datepicker({
+            format: "yyyy-mm-dd",
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+          })
+          .datepicker("setDate", new Date());
+
+        // Load initial data
+        loadAttendanceData($("#attendanceDate").val());
+
+        // Function to load attendance data based on date
+        function loadAttendanceData(date) {
+          showLoading("Loading attendance data...");
+
+          // Simulate API call delay
+          setTimeout(function () {
+            let students = [];
+
+            // Check if we have data for this date
+            if (sampleStudentData[date]) {
+              students = JSON.parse(JSON.stringify(sampleStudentData[date])); // Deep copy
+            } else {
+              // Default to today's data if no data for selected date
+              const today = formatDate(new Date());
+              students = sampleStudentData[today]
+                ? JSON.parse(JSON.stringify(sampleStudentData[today]))
+                : [];
+
+              // If still no data, use first available date
+              if (students.length === 0) {
+                const firstDate = Object.keys(sampleStudentData)[0];
+                students = sampleStudentData[firstDate]
+                  ? JSON.parse(JSON.stringify(sampleStudentData[firstDate]))
+                  : [];
+              }
+            }
+
+            // Clear table
+            $("#attendanceTableBody").empty();
+
+            // Populate table
+            students.forEach(function (student) {
+              const row = `
+                <tr data-id="${student.id}" class="status-${student.status}">
+                    <td>${student.rollNo}</td>
+                    <td>${student.name}</td>
+                    <td>
+                        <select class="status-select form-select">
+                            <option value="present" ${
+                              student.status === "present" ? "selected" : ""
+                            }>Present</option>
+                            <option value="absent" ${
+                              student.status === "absent" ? "selected" : ""
+                            }>Absent</option>
+                        </select>
+                    </td>
+                </tr>
+              `;
+              $("#attendanceTableBody").append(row);
+            });
+
+            // Update counts
+            updateCounts();
+
+            // Update total students
+            $("#totalStudents").text(`Total: ${students.length} students`);
+
+            // Attach event listeners to new elements
+            attachEventListeners();
+
+            // Reset modification flag
+            dataModified = false;
+            $("#submitBtn").prop("disabled", false);
+
+            hideLoading();
+
+            // Show message if update was triggered
+            if (updateInProgress) {
+              $("#toastMessage").text(
+                `Attendance for ${date} has been updated.`
+              );
+              successToast.show();
+              updateInProgress = false;
+            }
+          }, 800);
+        }
+
+        // Function to update attendance counts
+        function updateCounts() {
+          const presentCount = $(".status-select").filter(function () {
+            return $(this).val() === "present";
+          }).length;
+
+          const absentCount = $(".status-select").filter(function () {
+            return $(this).val() === "absent";
+          }).length;
+
+          $("#presentCount").text(presentCount);
+          $("#absentCount").text(absentCount);
+        }
+
+        // Attach event listeners
+        function attachEventListeners() {
+          // Update counts when status changes
+          $(".status-select").change(function () {
+            // Update row highlighting
+            const row = $(this).closest("tr");
+            if ($(this).val() === "present") {
+              row.removeClass("status-absent").addClass("status-present");
+            } else {
+              row.removeClass("status-present").addClass("status-absent");
+            }
+
+            // Update counts
+            updateCounts();
+
+            // Mark as modified
+            dataModified = true;
+            $("#submitBtn").prop("disabled", false);
+          });
+        }
+
+        // Date change handler
+        $("#attendanceDate").change(function () {
+          // Check if data has been modified
+          if (dataModified) {
+            if (
+              confirm(
+                "You have unsaved changes. Are you sure you want to change the date without saving?"
+              )
+            ) {
+              loadAttendanceData($(this).val());
+            } else {
+              // Revert date picker to previous value
+              $(this).datepicker("update", $(this).data("previousDate"));
+            }
+          } else {
+            loadAttendanceData($(this).val());
+          }
+
+          // Store current date for potential revert
+          $(this).data("previousDate", $(this).val());
+        });
+
+        // Class and Batch change handlers
+        $("#classSelect, #batchSelect").change(function () {
+          const selectedClass = $("#classSelect").val();
+          const selectedBatch = $("#batchSelect").val();
+
+          // In a real app, this would filter by class and batch
+          // For demo purposes, we'll just show a message
+          if (selectedClass && selectedBatch) {
+            $("#toastMessage").text(
+              `Filtered to Class ${selectedClass}, Batch ${selectedBatch}`
+            );
+            successToast.show();
+          }
+        });
+
+        // Update button click handler
+        $("#updateBtn").click(function () {
+          const selectedDate = $("#attendanceDate").val();
+          updateInProgress = true;
+          loadAttendanceData(selectedDate);
+        });
+
+        // Submit button click handler
+        $("#submitBtn").click(function () {
+          showLoading("Saving attendance data...");
+
+          // Collect current attendance data
+          const attendanceData = [];
+          $("#attendanceTableBody tr").each(function () {
+            const id = $(this).data("id");
+            const rollNo = parseInt($(this).find("td:eq(0)").text());
+            const name = $(this).find("td:eq(1)").text();
+            const status = $(this).find(".status-select").val();
+
+            attendanceData.push({
+              id: id,
+              rollNo: rollNo,
+              name: name,
+              status: status,
+            });
+          });
+
+          // Get selected date
+          const selectedDate = $("#attendanceDate").val();
+
+          // Simulate saving data (in a real app, this would be an API call)
+          setTimeout(function () {
+            // Update our sample data (to persist changes)
+            sampleStudentData[selectedDate] = attendanceData;
+
+            // Show success message
+            $("#toastMessage").text(
+              `Attendance for ${selectedDate} has been saved successfully!`
+            );
+            successToast.show();
+
+            // Reset modification flag
+            dataModified = false;
+            $("#submitBtn").prop("disabled", false);
+
+            hideLoading();
+          }, 1000);
+        });
+
+        // Helper function to format date as YYYY-MM-DD
+        function formatDate(date) {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
+          return `${year}-${month}-${day}`;
+        }
+
+        // Show loading overlay
+        function showLoading(message) {
+          $("#loadingText").text(message || "Loading...");
+          $(".loading-overlay").fadeIn(200);
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+          $(".loading-overlay").fadeOut(200);
+        }
+      });
+    </script>
+  </body>
+</html>
