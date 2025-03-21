@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            border-bottom: 1px solid #eee;
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); /* Darker royal blue color from the image */
+            color: white;
+            border-radius: 4px;
+        }
+        .date-picker {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .filters {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        .filter-group {
+            flex: 1;
+        }
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .filter-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+        .summary {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .summary-item {
+            text-align: center;
+        }
+        .summary-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .summary-label {
+            color: #666;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .status-toggle {
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: none;
+            color: white;
+            font-weight: bold;
+        }
+        .present {
+            background-color: #4CAF50;
+        }
+        .absent {
+            background-color: #f44336;
+        }
+        .buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .update-btn {
+          background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); /* Changed to match the image blue */
+            color: white;
+        }
+        .submit-btn {
+            background-color: #2a7d2d;
+            color: white;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Mark Student Attendance</h1>
+            <input type="date" id="attendance-date" class="date-picker">
+        </div>
+        
+        <div class="filters">
+            <div class="filter-group">
+                <label for="class-select">Select Class:</label>
+                <select id="class-select">
+                    <!--<option value="">All Classes</option>-->
+                    <option value="1">Class 1</option>
+                    <option value="2">Class 2</option>
+                    <option value="3">Class 3</option>
+                    <option value="4">Class 4</option>
+                    <option value="5">Class 5</option>
+                    <option value="6">Class 6</option>
+                    <option value="7">Class 7</option>
+                    <option value="8">Class 8</option>
+                    <option value="9">Class 9</option>
+                    <option value="10">Class 10</option>
+                    <option value="11">Class 11</option>
+                    <option value="12">Class 12</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="batch-select">Select Batch:</label>
+                <select id="batch-select">
+                    <!--<option value="">All Batches</option>-->
+                    <option value="morning">Morning</option>
+                    <option value="afternoon">Afternoon</option>
+                    <option value="evening">Evening</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="summary">
+            <div class="summary-item">
+                <div class="summary-value" id="present-count">0</div>
+                <div class="summary-label">Present</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-value" id="absent-count">0</div>
+                <div class="summary-label">Absent</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-value" id="total-count">0</div>
+                <div class="summary-label">Total</div>
+            </div>
+        </div>
+        
+        <table id="attendance-table">
+            <thead>
+                <tr>
+                    <th>Roll No.</th>
+                    <th>Student Name</th>
+                    <th>Class</th>
+                    <th>Batch</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="attendance-body">
+                <!-- Table rows will be added dynamically -->
+            </tbody>
+        </table>
+        
+        <div class="buttons">
+            <button id="update-btn" class="update-btn">Update</button>
+            <button id="submit-btn" class="submit-btn">Submit</button>
+        </div>
+    </div>
+    
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Create student data with exactly 10 students per class
+        // Each student will have records for morning, afternoon, and evening batches
+        function createStudentData() {
+            const students = [];
+            let id = 1;
+            
+            // Names data for random generation
+            const firstNames = ["John", "Emily", "Michael", "Jessica", "William", "Olivia", "James", "Sophia", "Robert", "Emma", 
+                                "Daniel", "Ava", "Joseph", "Isabella", "David", "Mia", "Andrew", "Charlotte", "Matthew", "Amelia"];
+            const lastNames = ["Smith", "Johnson", "Brown", "Davis", "Wilson", "Martinez", "Taylor", "Anderson", "Thomas", "Jackson",
+                               "White", "Harris", "Martin", "Thompson", "Garcia", "Clark", "Lewis", "Lee", "Walker", "Hall"];
+            
+            // Create 10 students for each class
+            for (let classNum = 1; classNum <= 12; classNum++) {
+                // For each student in the class
+                for (let i = 1; i <= 10; i++) {
+                    // Generate a random name
+                    const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                    const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                    
+                    // Create roll number (format: class-student)
+                    const rollNo = `${classNum.toString().padStart(2, '0')}${i.toString().padStart(2, '0')}`;
+                    
+                    // Create students for all three batches
+                    const batches = ["morning", "afternoon", "evening"];
+                    
+                    batches.forEach(batch => {
+                        students.push({
+                            id: id++,
+                            rollNo: rollNo,
+                            name: `${randomFirstName} ${randomLastName}`,
+                            class: classNum.toString(),
+                            batch: batch
+                        });
+                    });
+                }
+            }
+            
+            return students;
+        }
+
+        // Generate student data
+        const students = createStudentData();
+
+        // Attendance records by date
+        const attendanceRecords = {};
+
+        // Set today's date as default
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('attendance-date').value = formattedDate;
+            
+            // Initialize attendance for today if not exists
+            if (!attendanceRecords[formattedDate]) {
+                initializeAttendance(formattedDate);
+            }
+            
+            // Render the initial data
+            renderAttendance(formattedDate);
+            
+            // Add event listener for date change
+            document.getElementById('attendance-date').addEventListener('change', function(e) {
+                const selectedDate = e.target.value;
+                if (!attendanceRecords[selectedDate]) {
+                    initializeAttendance(selectedDate);
+                }
+                renderAttendance(selectedDate);
+            });
+            
+            // Add event listeners for class and batch filters
+            document.getElementById('class-select').addEventListener('change', function() {
+                renderAttendance(document.getElementById('attendance-date').value);
+            });
+            
+            document.getElementById('batch-select').addEventListener('change', function() {
+                renderAttendance(document.getElementById('attendance-date').value);
+            });
+            
+            // Toggle attendance status
+            document.getElementById('attendance-body').addEventListener('click', function(e) {
+                if (e.target.classList.contains('status-toggle')) {
+                    const studentId = parseInt(e.target.dataset.studentId);
+                    const currentDate = document.getElementById('attendance-date').value;
+                    
+                    // Toggle status
+                    const currentStatus = attendanceRecords[currentDate][studentId];
+                    attendanceRecords[currentDate][studentId] = currentStatus === 'present' ? 'absent' : 'present';
+                    
+                    // Update UI
+                    renderAttendance(currentDate);
+                }
+            });
+            
+            // Update button functionality
+            document.getElementById('update-btn').addEventListener('click', function() {
+                showNotification('Attendance ready for update. Make your changes and submit.');
+            });
+            
+            // Submit button functionality
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                const currentDate = document.getElementById('attendance-date').value;
+                saveAttendance(currentDate);
+                showNotification('Attendance submitted successfully!');
+            });
+        });
+
+        // Initialize attendance for a new date
+        function initializeAttendance(date) {
+            attendanceRecords[date] = {};
+            students.forEach(student => {
+                // Default all students to present
+                attendanceRecords[date][student.id] = 'present';
+            });
+        }
+
+        // Render attendance for a specific date with filters
+        function renderAttendance(date) {
+            const tableBody = document.getElementById('attendance-body');
+            tableBody.innerHTML = '';
+            
+            const selectedClass = document.getElementById('class-select').value;
+            const selectedBatch = document.getElementById('batch-select').value;
+            
+            let presentCount = 0;
+            let absentCount = 0;
+            let totalCount = 0;
+            
+            // Filter students based on selected class and batch
+            const filteredStudents = students.filter(student => {
+                if (selectedClass && student.class !== selectedClass) return false;
+                if (selectedBatch && student.batch !== selectedBatch) return false;
+                return true;
+            });
+            
+            filteredStudents.forEach(student => {
+                const status = attendanceRecords[date][student.id];
+                
+                if (status === 'present') presentCount++;
+                else absentCount++;
+                
+                totalCount++;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.rollNo}</td>
+                    <td>${student.name}</td>
+                    <td>Class ${student.class}</td>
+                    <td>${capitalizeFirstLetter(student.batch)}</td>
+                    <td>
+                        <button class="status-toggle ${status}" data-student-id="${student.id}">
+                            ${status.toUpperCase()}
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Update summary
+            document.getElementById('present-count').textContent = presentCount;
+            document.getElementById('absent-count').textContent = absentCount;
+            document.getElementById('total-count').textContent = totalCount;
+        }
+
+        // Save attendance data
+        function saveAttendance(date) {
+            // In a real app, this would send data to a server
+            console.log(`Attendance saved for ${date}:`, attendanceRecords[date]);
+            // For demonstration purposes, we're just logging to console
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Helper function to capitalize first letter
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+    </script>
+</body>
+</html>
